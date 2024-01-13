@@ -1,8 +1,8 @@
-name: 0tf
+name: 0tm
 
 on:
   schedule:
-    - cron: '48 */3 * * *'
+    - cron: '29 */3 * * *'
   push:
     branches:
       - main
@@ -22,19 +22,17 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: |
-          content=$(curl -H "Authorization: token $PRIVATE_REPO_TOKEN" -H "Accept: application/vnd.github.v3.raw" "https://raw.githubusercontent.com/ipstreet312/myrep/main/ressources/tfphd.m3u8")
-          echo "CONTENT=$content" >> $GITHUB_ENV
+          content=$(curl -H "Authorization: token $PRIVATE_REPO_TOKEN" -H "Accept: application/vnd.github.v3.raw" "https://raw.githubusercontent.com/ipstreet312/myrep/main/ressources/0tmc.m3u8")
+          echo "content=$content" >> $GITHUB_OUTPUT
 
       - name: Replace Text
         run: |
-          content="${{ env.CONTENT }}"
-          sed -i "/tf1-cmaf/ c ${content}" all.m3u
+          sed -i "/tmc-cmaf/ c $(echo '${{ steps.fetch_content.outputs.content }}')" all.m3u
     
       - name: Commit and Push Changes
         run: |
-          git config --local user.name "0tf Action"
+          git config --local user.name "0tm Action"
           git config user.email "<>"
-          git pull
           git add all.m3u
-          git commit -m "0tf updated"
+          git commit -m "0tm updated"
           git push
